@@ -15640,6 +15640,84 @@ Default value is @code{2}. Scale factor is necessary for SRCNN model, because it
 input upscaled using bicubic upscaling with proper scale factor.
 @end table
 
+@anchor{im2im}
+@section im2im
+
+Transform the input by applying generic image-to-image translation models based on
+convolutional neural networks. Depending on how the model is trained, it can
+perform denoising, super-resolution, deconvolution etc.
+
+To use this filter you need to install the TensorFlow for C library (see
+@url{https://www.tensorflow.org/install/install_c}) and configure FFmpeg with
+@code{--enable-libtensorflow}
+
+Training scripts as well as scripts for model generation are provided in
+the repository at @url{https://github.com/oeway/im2im.git}.
+
+If the model takes image with multiple channels as input, you need to provide
+input stream with matched pixel format. Similarly for the output format,
+the output pixel format need to match the model output.
+
+The accepted input/output @code{pix_fmt} and channel numbers are:
+
+@table @samp
+@item gray8
+channel number = 1
+
+@item gray16
+channel number = 1
+
+@item grayf32
+channel number = 1
+
+@item rgb24
+channel number = 3
+
+@item bgr24
+channel number = 3
+
+@item rgb24
+channel number = 3
+
+@item rgba
+channel number = 4
+
+@item bgra
+channel number = 4
+
+@item rgb32
+channel number = 4
+
+@item bgr32
+channel number = 4
+
+@end table
+
+
+The filter accepts the following options:
+@table @option
+
+@item model
+Set path to model file specifying network architecture and its parameters.
+Note that it only accpet tensorflow's Protocol Buffers file format, typically
+with .pb extension.
+
+@item split_channels
+When frames with a single channel (pix_fmt=gray*) are fed to the filter,
+this parameter can be used to split channels vertically. For example, if
+@code{split_channels=2} and the input frame size is 512*1024, then each frame
+will be splitted into images with 2 channels before feeding into the model.
+Notice that the finally channel number must match with the DNN model.
+
+Default value is @code{1}.
+
+@item pix_fmt
+A string representing the pixel format of the output video frames.
+It may be a number corresponding to a pixel format, or a pixel format
+name.
+
+@end table
+
 @anchor{subtitles}
 @section subtitles
 
